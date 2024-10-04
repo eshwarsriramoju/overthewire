@@ -1,0 +1,230 @@
+Notation:
+    if you solve level X, then you get the level X password
+    for example, under the number 10 you will have the password obtained after
+    completing level 10
+
+0 ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If
+    ssh bandit0@bandit.labs.overthewire.org -p 2220
+    then cat the readme and get the password
+
+1 NH2SXQwcBdpmTEzi3bvBHMM9H66vVXjL
+    files with dash are kind of special, so use ./- to cat the file
+    note: you can use ./ for any file, but not necessary
+    it is in this case because the file name starts with a dash and 
+    it could be interpreted as a flag
+
+2 rRGizSaX8Mk1RTb1CNQoXTcYZWU6lgzi
+    cat "spaces in this filename"
+    
+3 aBZ0W5EmUfAf7kHTQeOwd8bauFJ2lAiG
+    just ls -a in the inhere directory and cat it
+
+4 4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw
+    for file in inhere/*; do
+        if file "$file" | grep -q "ASCII text"; then
+            cat "$file"
+        fi
+    done
+
+5   HWasnPhtq9AVKe0dmk45nxy20cvUa6EG
+    resources: https://stackoverflow.com/questions/4767396/linux-command-how-to-find-only-text-files
+    xargs is cool! do check it out if you forgot!
+    also explore find flags, they are very useful!
+    find inhere/ -size 1033c ! -executable | xargs file | grep text
+
+6 morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj
+    find / -group bandit6 -user bandit7 -size 33c 2>/dev/null | xargs cat
+    used 2>/dev/null to suppress the permission denied error
+
+7 dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc
+    cat data.txt | grep millionth | awk '{print $2}'
+    note the awk part, it is used for parsing when you might have multiple/trailing spaces
+
+8 4CKMh1JI91bUIZZPXDqGanal4xvAg0JM
+    cat data.txt | sort | uniq -u
+    note that uniq only compares adjacent lines, so you need to sort first
+
+9 FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey
+    strings data.txt | grep "==="
+    strings prints only ascii(printable) strings from a file
+
+10 dtR173fZKb0RRsDFSGsg2RWnpNVj3qRr
+    base64 -d data.txt | awk '{print $4}'
+    new command! base64 -d decodes base64 encoded text    
+
+11 7x16WNeHIi5YkIhWsfFIqoognUTyj9Q4
+    cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m' | awk '{print $4}'
+    tr is an interesting command, you need to give a byte stream 
+    and a one-to-one mapping of two sets. sets written adjacently --> concatenation.
+
+12 FO5dwFsc0cbaIiH0h8J2eUks2vdTDwAn
+    mkdir /tmp/rando; cp data.txt /tmp/rando; cd /tmp/rando; xxd -r data.txt > data2.txt; file data2.txt
+    then keep on unzipping and checking the file type until you get the password
+    gzip -d file.gz
+    bzip2 -d file.bz2
+    tar -xvf file.tar
+    it would be better to rename the file for the tool to work properly (it is not necessary though)
+    finally:
+    cat data8.bin | awk '{print $4}'
+
+13 MU4VWeTyJk8ROof1qqmcBPaLh7lDCPvS 
+    ssh -i sshkey.private bandit14@bandit.labs.overthewire.org -p 2220
+    cat /etc/bandit_pass/bandit14
+    note that you can use localhost instead of bandit.labs.overthewire.org
+
+14 8xCjnmgoKbGLhHFAZlGE5Tmu4M2tKJQo
+    echo MU4VWeTyJk8ROof1qqmcBPaLh7lDCPvS | nc localhost 30000
+    new command! nc is a networking utility for reading/writing to network connections
+
+15 kSkvUpMQ7lBYyCM4GBPvCvT1BfWRy0Dx
+    echo 8xCjnmgoKbGLhHFAZlGE5Tmu4M2tKJQo | ncat --ssl localhost 30001
+    new command! ncat is a modern version of nc with ssl support
+
+16 EReVavePLFHtFlFsjn3hyzMlvSuSAcRD
+    mkdir /tmp/rando ; cd /tmp/rando
+    echo kSkvUpMQ7lBYyCM4GBPvCvT1BfWRy0Dx | ncat --ssl localhost 31790 > sshkey.private
+    chmod 600 sshkey.private
+    ssh -i sshkey.private bandit17@localhost -p 2220
+    cat /etc/bandit_pass/bandit17
+    new! private key should be chmod 600
+
+17 x2gLTTjFwMOhQ8oWNbMN362QKxfRqGlO
+    diff passwords.old passwords.new | grep ">" | awk '{print $2}'
+    > is the symbol for the new file in diff
+    < is for the removed lines
+
+18 cGWpMaKXVwDUNgPAVJbWYuGHVn9zl3j8
+    ssh bandit18@bandit.labs.overthewire.org -p 2220 cat readme
+    you can execute commands inside the machine without logging in too!
+    ( you need the password of course )
+
+19 0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO
+    ./bandit20-do cat /etc/bandit_pass/bandit20
+    new! bandit20-do is a setuid binary that runs a command as bandit20
+    learn more about setuid and setgid!
+
+20 EeoULMCra2q0dSkYj561DX7s1CpBuOBt
+    send your password to a port and listen using suconnect
+    echo 0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO | ncat -l -p 12345
+    ./suconnect 12345
+
+21 tRae0UfB9v0UzbCdn9cY0gQnds9GF58Q
+    go to cron.d and ls
+        cd /etc/cron.d; ls
+    find something related to bandit22, cat it.
+        cat cronjob_bandit22
+    read the script that is being run periodically
+        cat /usr/bin/cronjob_bandit22.sh
+    you will observe that every minute, a file is created in /tmp which has the password 
+    of bandit22. so just cat that file
+        cat /tmp/t7O6lds9S0RqQh9aMcz6ShpPc
+    source: https://mayadevbe.me/posts/overthewire/bandit/level22/
+
+22 0Zf11ioIjMVN551jX3CmStKLYqjk54Ga
+    same as 21, new command! md5sum is used to calculate the md5 hash of a file
+        cd /etc/cron.d; ls
+        cat cronjob_bandit23
+        cat /usr/bin/cronjob_bandit23.sh
+        echo "I am user bandit23" | md5sum | cut -d ' ' -f1
+        cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+
+23 gb8KRRCsshuZXI0tUuR6ypOFjiZbf3G8 
+    create a /tmp folder and a script.sh file in it
+        mkdir /tmp/24; cd /tmp/blabla; touch script.sh
+    script.sh:
+        #!/bin/bash
+        cat /etc/bandit_pass/bandit24 > /tmp/blabla/password.txt
+    make the script executable and /tmp/blabla writable
+        chmod +x script.sh
+        chmod 777 /tmp/blabla
+    the file will be created and filled in a minute
+        cat /tmp/blabla/password.txt 
+
+24 iCi86ttT4KSNe1armKiwbQNmB3YJP3q4
+    the script to run is in this directory( this machine! eshwarsriramoju)
+
+25 s0773xxkk0MXfdqOfPRVr9L3jJBUOgCZ
+    crazy level!
+    source: https://mayadevbe.me/posts/overthewire/bandit/level26/
+    what i learned: more is dependant on window size!
+    you should use \ to escape the special characters
+    _ is a special character in more, so you need to escape it
+
+    use :e to open a file in vim    
+
+26 upsNCc7vzaRDx6oZC6GiR6ERwe1MowGB
+    ./bandit27-do cat /etc/bandit_pass/bandit27
+
+27 Yz9IpL0sBcCeuG7m9uQFt8ZNpS4HZRcN
+    git clone ssh://bandit27-git@bandit.labs.overthewire.org:2220/home/bandit27-git/repo
+    note the way of mentioning port in ssh
+    and that you can use git to clone a repo using ssh
+
+28 4pT1t5DENaYuqnqvadYs1oE4QLCdjmJ7
+    after cloning the repo, you will see a readme file
+    but the password is censored. go to a previous commit, and cat the readme
+        git checkout HEAD~1
+        cat README.md
+29 qp30ex3VLz5MDG1n91YowTv4Q8l7CDZL
+    after cloning the repo, change to branch origin/dev (trial and error)
+    cat the readme file
+        git checkout origin/dev
+        cat README.md   
+
+30 fb5S2xb7bRyFmAvQYQGEqsbhVyJqhnDy
+    clone the repo
+    git tag // to see all the tags
+    git show secret // to see the commit with the tag secret
+
+31 3O9RfhqyAlVBEZpVb6LYStshZoqoSx5K
+    very hazy, revisit later
+
+32 tQdtbs5D5i2vJwkO8mEyYEyTL8izoeJ0
+    shell is represented by a $0!
+        $0
+        echo $SHELL #note that shell is uppershell
+        ls -l uppershell #note that it is run by bandit33
+        cat /etc/bandit_pass/bandit33 # since it is run by bandit33
+        whoami #if you want to confirm
+    there are many other intersting variables, explore them!
+    source: https://mayadevbe.me/posts/overthewire/bandit/level33/
+
+33
+    no more levels!
+
+
+the $ sign can be used to assign the output of a command to a variable.
+
+for folder in maybehere*; do
+    if [ -d "$folder" ]; then
+        for file in "($folder)"/*; do
+            echo "$(file $(file))"
+        done
+    fi
+done
+
+for folder in maybehere*; do
+    if [ -d "$folder" ]; then
+        for file in "$folder"/*; do
+            if file "$file" | grep -q "ASCII" && [ $(stat -c "%s" "$file") -eq 1033 ]; then
+                echo "$file"
+            fi
+        done
+    fi
+done
+
+
+```find``` finds a file with 
+
+
+Learn more about:
+1. setuid and setgid
+2. interpreting the type of file using hexdump
+
+
+
+
+
+
+
+
